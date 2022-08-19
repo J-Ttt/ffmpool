@@ -1,0 +1,55 @@
+<div class="card">
+  <div class="card-header bg-green-gradient">
+    <h4 class="card-title"><i class="fas fa-tools"></i> Miner Configuration</h4>
+    <p class="card-category">
+      This is the basic guide how to setup your miner to this pool.
+    </p>
+  </div>
+  <div class="card-body">
+    <div class="typo-line">
+      <h2>Getting started</h2>
+      <hr />
+	  <p>
+		 To get started mining and use this pool you need the following
+		 <ul>
+			<li>{{ coinName }} Wallet address</li>
+			<li>Mining software that supports the {{ coinName }} coin and algorithm {{ aglorithm }}</li>
+			<li>Hardware to run it on. This can be your home PC, mining rig or cloud mining for example.</li>
+		 </ul>
+		 </br>
+		 <h4>{{ coinName }} Wallet address</h4>
+		 A wallet address is needed to payout you shares mined at this pool server. Get your wallet for Bamboo <a href="https://github.com/f10crypto/bamboowallet/releases">here</a></br>
+		 When the total mined value is past the payout threshold, we will send your coin to this wallet address.</br>
+		 </br>
+		 </br>
+		 <h4>Mining Software</h4>
+		 To mine at this pool you can use any miner supporting the {{ aglorithm }} algorithm or {{ coinName }} coin.</br>
+		 Currently only one miner is supported <a href="https://github.com/De-Crypted/dcrptd-miner/releases">download here</a>.
+		 Download the miner from releases and configure the miner.</br>
+      </p>
+	  <p>Open config.json with your favorite text editor</p>
+              <ul>
+			    <li>POOL STRATUM ADDRESS AND PORT - one off the stratum addresses above in the Pool Configuration</li>
+                <li>YOUR_WALLET_ADDRESS - your valid {{ coinName }} wallet address</li>
+				<li>WORKERNAME - an optional workername can be used to identify the miner or RIG</li>
+				<li>PASSWORD - use x or leave it blank</li>
+				</br>
+			  </ul>
+      </br>
+      <hr />
+      <div class="well well-lg"><span>Example Configuration in config.json</span></br>
+      <pre class="pre-help">
+    "_url": "Pool or node url. You can set multiple addresses, first one will be used as default and if connection fails miner will move to next one. Address prefix determines protocol used.",
+    "url": [
+        "stratum+tcp://bmb.ffmpool.com:4444"
+    ],
+    "_user": "Username or wallet address as required by pool",
+    "user": "007B7857DBA9E4AFD1E53AFAF2155D6EB088B2D4AA4CEF3AF8.MyFirstWorker",
+    "_password": "Password",
+    "password": "MyPassword",
+      </pre>
+      </div>
+      <div class="well well-lg"><span>In config.pufferfish2bmb.json you can set how many threads or leave it as it is -1 for autodetect all.</span>
+    </div>
+  </div>
+</div>
