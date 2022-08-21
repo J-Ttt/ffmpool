@@ -113,7 +113,7 @@ function loadIndex() {
       case "dashboard":
 	    console.log('Loading dashboard page content');
         $(".nav-dashboard").addClass("active");
-		loadDashboardPage();
+		    loadDashboardPage();
         break;
 	  case "miners":
 	    console.log('Loading miners page content');
@@ -212,18 +212,21 @@ function loadHomePage() {
     });
 }
 
+var statsTimer = undefined;
+var chartTimer = undefined;
 
 // Load STATS page content
 function loadStatsPage() {
-  //clearInterval();
-  setInterval(
+  clearInterval(statsTimer);
+  clearInterval(chartTimer);
+  statsTimer = setInterval(
     (function load() {
       loadStatsData();
       return load;
     })(),
     60000
   );
-  setInterval(
+  chartTimer = setInterval(
     (function load() {
       loadStatsChart();
       return load;
@@ -232,12 +235,13 @@ function loadStatsPage() {
   );
 }
 
+var dashboardTimer = undefined;
 
 // Load DASHBOARD page content
 function loadDashboardPage() {
   function render() {
-    //clearInterval();
-    setInterval(
+    clearInterval(dashboardTimer);
+    dashboardTimer = setInterval(
       (function load() {
         loadDashboardData($("#walletAddress").val());
         loadDashboardWorkerList($("#walletAddress").val());
@@ -253,11 +257,11 @@ function loadDashboardPage() {
     if (wallet) {
       $(walletAddress).val(wallet);
       localStorage.setItem(currentPool + "-walletAddress", wallet);
-      render();
     }
   }
   if (localStorage[currentPool + "-walletAddress"]) {
     $("#walletAddress").val(localStorage[currentPool + "-walletAddress"]);
+    render();
   }
 }
 
