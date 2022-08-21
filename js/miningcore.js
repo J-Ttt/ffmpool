@@ -303,7 +303,7 @@ function loadBlocksPage() {
       var blockList = "";
       if (data.length > 0) {
         $.each(data, function(index, value) {
-		  var createDate = convertLocalDateToUTCDate(new Date(value.created),false);
+		  var createDate = convertUTCDateToLocalDate(new Date(value.created),false).toLocaleString();
           var effort = Math.round(value.effort * 100);
           var effortClass = "";
           if (effort < 30) {
@@ -356,7 +356,7 @@ function loadPaymentsPage() {
       var paymentList = "";
       if (data.length > 0) {
         $.each(data, function(index, value) {
-          var createDate = convertLocalDateToUTCDate(new Date(value.created),false);
+          var createDate = convertUTCDateToLocalDate(new Date(value.created),false).toLocaleString();
           paymentList += '<tr>';
           paymentList +=   "<td>" + createDate + "</td>";
           paymentList +=   '<td><a href="' + value.addressInfoLink + '" target="_blank">' + value.address.substring(0, 12) + ' &hellip; ' + value.address.substring(value.address.length - 12) + '</td>';
@@ -603,7 +603,7 @@ function loadStatsChart() {
       
       $.each(data.stats, function(index, value) {
         if (labels.length === 0 || (labels.length + 1) % 4 === 1) {
-          var createDate = convertLocalDateToUTCDate(new Date(value.created),false);
+          var createDate = convertUTCDateToLocalDate(new Date(value.created),false);
           labels.push(createDate.getHours() + ":00");
         } else {
           labels.push("");
@@ -754,7 +754,7 @@ function loadDashboardChart(walletAddress) {
 		
         $.each(data, function(index, value) {
           if (labels.length === 0 || (labels.length + 1) % 4 === 1) {
-            var createDate = convertLocalDateToUTCDate(
+            var createDate = convertUTCDateToLocalDate(
               new Date(value.created),
               false
             );
