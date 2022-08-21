@@ -112,10 +112,15 @@ Apply one or more of the following classes to get the desired effect
               <i class="fas fa-chart-line"></i><span>Stats</span>
             </a>
           </li>
-          <li class="nav-dashboard">
+          <li class="nav-dashboard has-submenu">
             <a class="nav-link" href="#{{ coinId }}/dashboard">
               <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
             </a>
+            <ul class="nav-dashboard-settings" style="display:none;">
+              <a class="nav-link" href="#{{ coinId }}/settings">
+                <i class="fas fa-wrench"></i><span>Settings</span>
+              </a>
+            </ul>
           </li>
           <li class="nav-miners">
             <a class="nav-link" href="#{{ coinId }}/miners">
@@ -526,6 +531,54 @@ Apply one or more of the following classes to get the desired effect
 		  </div>
 
 	    </div>
+	
+	</div>
+
+  <!-- POOL DASHBOARD SETTINGS PAGE -->
+  <div class="page page-settings" style="display:none;">
+		<section class="content-header">
+			<h1>MINER<small>dashboard</small></h1>
+		</section>
+		<div class="content container-fluid">
+		  
+		  <div class="row">
+
+      <div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="card">
+					<div class="card-header card-shadow bg-green-gradient">
+						<h3 class="card-title">Minimum Payout</h3>
+						<p class="card-category">set minimum payout</p>
+					</div>
+					<div class="card-body">
+					<form>
+            <div class="card-input input-group form-group bmd-form-group">
+						  <div class="row">
+							  <div class="col-md-6 col-sm-6 col-xs-6">
+									<input class="form-control" type="text" id="ipAddress" placeholder="Miner IP Address">
+								</div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                  <input class="form-control" type="text" id="minimumPayout" placeholder="Minimum payout">
+								</div>
+							</div>
+              <div class="col-12" style="margin-top: 10px">
+                  Minimum payout must be greater than pool minimum (1 BMB)
+              </div>
+						</div>
+						<button id="submit-settings" onClick="submitSettings(this.id)" type="submit" class="btn btn-info btn-fill btn-wd">Save</button>	
+						<div class="clearfix"></div>
+            <div id="updateSuccess" class="alert alert-success" style="display: none;">
+              Minimum payout updated.
+            </div>
+            <div id="updateFailed" class="alert alert-danger" style="display: none;">
+              Failed to update minimum payout. Is ip address correct?
+            </div>
+					</form>
+					</div>
+				</div>
+			</div>
+			
+		  </div>
+    </div>
 	
 	</div>
 	

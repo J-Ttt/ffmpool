@@ -102,19 +102,30 @@ function loadIndex() {
   }
   
   if (currentPool) {
-	$("li[class^='nav-']").removeClass("active");
+    if (localStorage[currentPool + "-walletAddress"]) {
+      $(".nav-dashboard-settings").show();
+    }
+
+	  $("li[class^='nav-']").removeClass("active");
+    $("ul[class^='nav-']").removeClass("active");
     
 	switch (currentPage) {
-      case "stats":
+    case "stats":
 	    console.log('Loading stats page content');
 	    $(".nav-stats").addClass("active");
         loadStatsPage();
         break;
-      case "dashboard":
+    case "dashboard":
 	    console.log('Loading dashboard page content');
         $(".nav-dashboard").addClass("active");
 		    loadDashboardPage();
         break;
+    case "settings":
+	      console.log('Loading setting page content');
+        $(".nav-dashboard-settings").addClass("active");
+		    loadDashboardSettingsPage();
+        break;
+      break;
 	  case "miners":
 	    console.log('Loading miners page content');
         $(".nav-miners").addClass("active");
@@ -265,6 +276,12 @@ function loadDashboardPage() {
   }
 }
 
+// Load DASHBOARD settings page content
+function loadDashboardSettingsPage() {
+  if (localStorage[currentPool + "-walletAddress"]) {
+    loadSettingsData(localStorage[currentPool + "-walletAddress"]);
+  }
+}
 
 // Load MINERS page content
 function loadMinersPage() {
@@ -482,6 +499,35 @@ function loadWallet() {
   window.location.href = "#" + currentPool + "/" + currentPage + "?address=" + $("#walletAddress").val();
 }
 
+// Dashboard - load wallet stats
+function submitSettings() {
+  return $.ajax({
+    url: API + "pools/" + currentPool + "/miners/" + localStorage[currentPool + "-walletAddress"] + "/settings",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({
+      ipAddress: $("#ipAddress").val(),
+      settings: {
+        paymentThreshold: $("#minimumPayout").val()
+      }
+    })
+  })
+  .done(function(data) {
+    $('#updateSuccess').show();
+    $("#minimumPayout").val(data.paymentThreshold);
+
+    setTimeout(function(){
+      $('#updateSuccess').hide();
+  }, 5000);
+  })
+  .fail(function() {
+    $('#updateFailed').show();
+
+    setTimeout(function(){
+      $('#updateFailed').hide();
+  }, 5000);
+  });
+}
 
 // General formatter function
 function _formatter(value, decimal, unit) {
@@ -706,6 +752,16 @@ function loadDashboardData(walletAddress) {
     });
 }
 
+// DASHBOARD page data
+function loadSettingsData(walletAddress) {
+  return $.ajax(API + "pools/" + currentPool + "/miners/" + walletAddress + "/settings")
+    .done(function(data) {
+      $("#minimumPayout").val(data.paymentThreshold);
+    })
+    .fail(function() {
+
+    });
+}
 
 // DASHBOARD page Miner table
 function loadDashboardWorkerList(walletAddress) {
