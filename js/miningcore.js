@@ -102,19 +102,30 @@ function loadIndex() {
   }
   
   if (currentPool) {
-	$("li[class^='nav-']").removeClass("active");
+    if (localStorage[currentPool + "-walletAddress"]) {
+      $(".nav-dashboard-settings").show();
+    }
+
+	  $("li[class^='nav-']").removeClass("active");
+    $("ul[class^='nav-']").removeClass("active");
     
 	switch (currentPage) {
-      case "stats":
+    case "stats":
 	    console.log('Loading stats page content');
 	    $(".nav-stats").addClass("active");
         loadStatsPage();
         break;
-      case "dashboard":
+    case "dashboard":
 	    console.log('Loading dashboard page content');
         $(".nav-dashboard").addClass("active");
-		loadDashboardPage();
+		    loadDashboardPage();
         break;
+    case "settings":
+	      console.log('Loading setting page content');
+        $(".nav-dashboard-settings").addClass("active");
+		    loadDashboardSettingsPage();
+        break;
+      break;
 	  case "miners":
 	    console.log('Loading miners page content');
         $(".nav-miners").addClass("active");
@@ -212,18 +223,21 @@ function loadHomePage() {
     });
 }
 
+var statsTimer = undefined;
+var chartTimer = undefined;
 
 // Load STATS page content
 function loadStatsPage() {
-  //clearInterval();
-  setInterval(
+  clearInterval(statsTimer);
+  clearInterval(chartTimer);
+  statsTimer = setInterval(
     (function load() {
       loadStatsData();
       return load;
     })(),
     60000
   );
-  setInterval(
+  chartTimer = setInterval(
     (function load() {
       loadStatsChart();
       return load;
@@ -232,12 +246,13 @@ function loadStatsPage() {
   );
 }
 
+var dashboardTimer = undefined;
 
 // Load DASHBOARD page content
 function loadDashboardPage() {
   function render() {
-    //clearInterval();
-    setInterval(
+    clearInterval(dashboardTimer);
+    dashboardTimer = setInterval(
       (function load() {
         loadDashboardData($("#walletAddress").val());
         loadDashboardWorkerList($("#walletAddress").val());
@@ -253,14 +268,20 @@ function loadDashboardPage() {
     if (wallet) {
       $(walletAddress).val(wallet);
       localStorage.setItem(currentPool + "-walletAddress", wallet);
-      render();
     }
   }
   if (localStorage[currentPool + "-walletAddress"]) {
     $("#walletAddress").val(localStorage[currentPool + "-walletAddress"]);
+    render();
   }
 }
 
+// Load DASHBOARD settings page content
+function loadDashboardSettingsPage() {
+  if (localStorage[currentPool + "-walletAddress"]) {
+    loadSettingsData(localStorage[currentPool + "-walletAddress"]);
+  }
+}
 
 // Load MINERS page content
 function loadMinersPage() {
@@ -303,7 +324,7 @@ function loadBlocksPage() {
       var blockList = "";
       if (data.length > 0) {
         $.each(data, function(index, value) {
-		  var createDate = convertLocalDateToUTCDate(new Date(value.created),false);
+		  var createDate = convertUTCDateToLocalDate(new Date(value.created),false).toLocaleString();
           var effort = Math.round(value.effort * 100);
           var effortClass = "";
           if (effort < 30) {
@@ -356,7 +377,7 @@ function loadPaymentsPage() {
       var paymentList = "";
       if (data.length > 0) {
         $.each(data, function(index, value) {
-          var createDate = convertLocalDateToUTCDate(new Date(value.created),false);
+          var createDate = convertUTCDateToLocalDate(new Date(value.created),false).toLocaleString();
           paymentList += '<tr>';
           paymentList +=   "<td>" + createDate + "</td>";
           paymentList +=   '<td><a href="' + value.addressInfoLink + '" target="_blank">' + value.address.substring(0, 12) + ' &hellip; ' + value.address.substring(value.address.length - 12) + '</td>';
@@ -478,6 +499,35 @@ function loadWallet() {
   window.location.href = "#" + currentPool + "/" + currentPage + "?address=" + $("#walletAddress").val();
 }
 
+// Dashboard - load wallet stats
+function submitSettings() {
+  return $.ajax({
+    url: API + "pools/" + currentPool + "/miners/" + localStorage[currentPool + "-walletAddress"] + "/settings",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify({
+      ipAddress: $("#ipAddress").val(),
+      settings: {
+        paymentThreshold: $("#minimumPayout").val()
+      }
+    })
+  })
+  .done(function(data) {
+    $('#updateSuccess').show();
+    $("#minimumPayout").val(data.paymentThreshold);
+
+    setTimeout(function(){
+      $('#updateSuccess').hide();
+  }, 5000);
+  })
+  .fail(function() {
+    $('#updateFailed').show();
+
+    setTimeout(function(){
+      $('#updateFailed').hide();
+  }, 5000);
+  });
+}
 
 // General formatter function
 function _formatter(value, decimal, unit) {
@@ -603,7 +653,7 @@ function loadStatsChart() {
       
       $.each(data.stats, function(index, value) {
         if (labels.length === 0 || (labels.length + 1) % 4 === 1) {
-          var createDate = convertLocalDateToUTCDate(new Date(value.created),false);
+          var createDate = convertUTCDateToLocalDate(new Date(value.created),false);
           labels.push(createDate.getHours() + ":00");
         } else {
           labels.push("");
@@ -702,6 +752,16 @@ function loadDashboardData(walletAddress) {
     });
 }
 
+// DASHBOARD page data
+function loadSettingsData(walletAddress) {
+  return $.ajax(API + "pools/" + currentPool + "/miners/" + walletAddress + "/settings")
+    .done(function(data) {
+      $("#minimumPayout").val(data.paymentThreshold);
+    })
+    .fail(function() {
+
+    });
+}
 
 // DASHBOARD page Miner table
 function loadDashboardWorkerList(walletAddress) {
@@ -754,7 +814,7 @@ function loadDashboardChart(walletAddress) {
 		
         $.each(data, function(index, value) {
           if (labels.length === 0 || (labels.length + 1) % 4 === 1) {
-            var createDate = convertLocalDateToUTCDate(
+            var createDate = convertUTCDateToLocalDate(
               new Date(value.created),
               false
             );

@@ -26,7 +26,9 @@
 .skin-black .main-header .navbar .nav .open > a,
 .skin-black .main-header .navbar .nav .open > a:hover,
 .skin-black .main-header .navbar .nav .open > a:focus,
-.skin-black .main-header .navbar .nav > .active > a {
+.skin-black .main-header .navbar .nav > li > a:hover
+.skin-black .main-header .navbar .nav > li > ul > a:hover
+.skin-black .main-header .navbar .nav > li > ul > a:active {
   background: #ffffff;
   color: #999999;
 }
@@ -92,13 +94,15 @@
 .skin-black .sidebar-menu > li > a {
   border-left: 3px solid transparent;
 }
-.skin-black .sidebar-menu > li:hover > a,
-.skin-black .sidebar-menu > li.active > a,
+.skin-black .sidebar-menu > li > a:hover,
+.skin-black .sidebar-menu > li > ul > a:hover,
+.skin-black .sidebar-menu > li.active > a:first-child,
+.skin-black .sidebar-menu > li ul.active > a:first-child,
 .skin-black .sidebar-menu > li.menu-open > a {
   color: #ffffff;
   background: #1e282c;
 }
-.skin-black .sidebar-menu > li.active > a {
+.skin-black .sidebar-menu > li.active > a:first-child {
   border-left-color: #ffffff;
 }
 .skin-black .sidebar-menu > li > .treeview-menu {
